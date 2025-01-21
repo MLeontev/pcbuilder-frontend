@@ -6,6 +6,7 @@ import { useAuthStore } from '../store/authStore';
 import LoginForm from './auth/LoginForm';
 import RegisterForm from './auth/RegisterForm';
 import AuthLayout from './layouts/AuthLayout';
+import ComponentPage from './pcComponents/ComponentPage';
 
 export default function AppRouter() {
   const isAuth = useAuthStore((state) => state.isAuth);
@@ -44,8 +45,8 @@ export default function AppRouter() {
           }
         />
       )}
-
-      <Route path='*' element={<NotFoundPage />} />
+      <Route path='/:category/:id' element={<ComponentPage />} />
+      <Route path='/404' element={<NotFoundPage />} />
     </Routes>
   );
 }

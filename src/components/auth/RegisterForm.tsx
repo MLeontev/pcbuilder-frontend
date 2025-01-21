@@ -36,7 +36,7 @@ const validationSchema = yup.object({
     .oneOf([yup.ref('password')], 'Пароли не совпадают'),
 });
 
-export default function () {
+export default function RegisterForm() {
   const {
     register,
     handleSubmit,

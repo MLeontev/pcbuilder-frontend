@@ -1,8 +1,7 @@
 import axios from 'axios';
 import AuthService from '../services/authService';
 
-// export const API_URL = 'https://localhost:44335/api';
-
+export const IMAGES_URL = 'http://localhost:5206/images';
 export const API_URL = 'http://localhost:5206/api';
 
 const api = axios.create({

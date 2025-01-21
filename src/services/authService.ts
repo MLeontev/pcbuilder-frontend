@@ -3,13 +3,11 @@ import api, { API_URL } from '../http';
 import { AuthResponse } from '../types/AuthResponse';
 
 export default class AuthService {
-  private static AUTH_URL = `${API_URL}/auth`;
-
   static async login(
     username: string,
     password: string
   ): Promise<AxiosResponse<AuthResponse>> {
-    return api.post<AuthResponse>(`${AuthService.AUTH_URL}/login`, {
+    return api.post<AuthResponse>(`/auth/login`, {
       username,
       password,
     });
@@ -20,7 +18,7 @@ export default class AuthService {
     password: string,
     confirmPassword: string
   ): Promise<AxiosResponse<AuthResponse>> {
-    return api.post<AuthResponse>(`${AuthService.AUTH_URL}/register`, {
+    return api.post<AuthResponse>(`/auth/register`, {
       username,
       password,
       confirmPassword,
@@ -28,11 +26,11 @@ export default class AuthService {
   }
 
   static async logout(): Promise<void> {
-    return api.post(`${AuthService.AUTH_URL}/logout`);
+    return api.post(`/auth/logout`);
   }
 
   static async refresh(): Promise<AxiosResponse<AuthResponse>> {
-    return axios.get<AuthResponse>(`${AuthService.AUTH_URL}/refresh`, {
+    return axios.get<AuthResponse>(`${API_URL}/auth/refresh`, {
       withCredentials: true,
     });
   }
