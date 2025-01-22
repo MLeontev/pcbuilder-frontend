@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import { AuthResponse } from '../types/AuthResponse';
-import { IUser } from '../types/IUser';
+import { AuthResponse } from '../types/auth/AuthResponse';
+import { IUser } from '../types/auth/IUser';
 
 type AuthStoreState = {
   user: IUser | null;

@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import api, { API_URL } from '../http';
-import { AuthResponse } from '../types/AuthResponse';
+import { AuthResponse } from '../types/auth/AuthResponse';
 
 export default class AuthService {
   static async login(

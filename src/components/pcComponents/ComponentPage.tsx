@@ -18,8 +18,6 @@ export default function ComponentPage() {
     return <Navigate to='/404' />;
   }
 
-  console.log(data);
-
   return (
     <div>
       <h2>{data.name}</h2>

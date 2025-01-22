@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import { ApiError } from '../types/ApiError';
+import { ApiError } from '../types/errors/ApiError';
 
 const DEFAULT_ERROR_MESSAGE = 'Произошла ошибка. Попробуйте позже.';
 

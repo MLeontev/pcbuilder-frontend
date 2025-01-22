@@ -1,16 +1,19 @@
 import { useQuery } from '@tanstack/react-query';
 import componentService from '../../services/componentService';
 
-export function useComponent(componentProps: { id: number; category: string }) {
+export function useComponent(getComponentProps: {
+  id: number;
+  category: string;
+}) {
   const query = useQuery({
-    queryKey: ['component', componentProps.id],
+    queryKey: ['component', getComponentProps.id],
     queryFn: () =>
       componentService.getComponentById(
-        componentProps.id,
-        componentProps.category
+        getComponentProps.id,
+        getComponentProps.category
       ),
     select: (data) => data.data,
-    enabled: !!componentProps.id,
+    enabled: !!getComponentProps.id,
   });
 
   return { ...query };

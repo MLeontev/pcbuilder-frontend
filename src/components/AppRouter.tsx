@@ -6,6 +6,7 @@ import { useAuthStore } from '../store/authStore';
 import LoginForm from './auth/LoginForm';
 import RegisterForm from './auth/RegisterForm';
 import AuthLayout from './layouts/AuthLayout';
+import ComponentList from './pcComponents/ComponentList';
 import ComponentPage from './pcComponents/ComponentPage';
 
 export default function AppRouter() {
@@ -45,6 +46,7 @@ export default function AppRouter() {
           }
         />
       )}
+      <Route path='/:category' element={<ComponentList />} />
       <Route path='/:category/:id' element={<ComponentPage />} />
       <Route path='/404' element={<NotFoundPage />} />
     </Routes>
