@@ -1,4 +1,4 @@
-export interface ComponentDetailsResponse {
+export interface ComponentDetailsDto {
   id: number;
   imagePath: string | null;
   name: string;

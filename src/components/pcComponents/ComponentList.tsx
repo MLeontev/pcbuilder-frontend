@@ -1,13 +1,43 @@
-import { Navigate, useParams, useSearchParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { useComponents } from '../../hooks/pcComponents/useComponents';
+import { useBuildStore } from '../../store/buildStore';
 
-export default function ComponentList() {
-  const { category } = useParams();
+interface ComponentListProps {
+  category: string;
+  title: string;
+}
+
+export default function ComponentList({ category, title }: ComponentListProps) {
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
 
-  const page = parseInt(searchParams.get('page') || '1');
-  const pageSize = parseInt(searchParams.get('pageSize') || '10');
-  const searchQuery = searchParams.get('searchQuery') || '';
+  const defaultParams = {
+    page: '1',
+    pageSize: '10',
+    searchQuery: '',
+  };
+
+  useEffect(() => {
+    const newSearchParams = new URLSearchParams(searchParams);
+
+    Object.entries(defaultParams).forEach(([key, value]) => {
+      if (!newSearchParams.has(key)) {
+        newSearchParams.set(key, value);
+      }
+    });
+
+    setSearchParams(newSearchParams);
+  }, [searchParams, setSearchParams]);
+
+  const page = parseInt(searchParams.get('page') || defaultParams.page);
+  const pageSize = parseInt(
+    searchParams.get('pageSize') || defaultParams.pageSize
+  );
+  const searchQuery =
+    searchParams.get('searchQuery') || defaultParams.searchQuery;
+
+  const addComponent = useBuildStore((state) => state.addComponent);
 
   const { data, isLoading, isError } = useComponents(category!, {
     page,
@@ -33,7 +63,7 @@ export default function ComponentList() {
 
   return (
     <div>
-      <h1>{category?.toUpperCase()} List</h1>
+      <h1>{title}</h1>
 
       <input
         type='text'
@@ -55,9 +85,21 @@ export default function ComponentList() {
 
       <div>
         {data?.items.map((component) => (
-          <div key={component.id}>
+          <div
+            className='max-w-xl border border-solid border-black p-1 m-1 cursor-pointer'
+            key={component.id}
+            onClick={() => navigate(`/${category}/${component.id}`)}
+          >
             <h2>{component.fullName}</h2>
             <p>{component.description}</p>
+            <button
+              onClick={(event) => {
+                event.stopPropagation();
+                addComponent(category || '', component.id);
+              }}
+            >
+              Добавить в сборку
+            </button>
           </div>
         ))}
       </div>

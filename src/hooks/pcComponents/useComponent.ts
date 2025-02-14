@@ -14,6 +14,7 @@ export function useComponent(getComponentProps: {
       ),
     select: (data) => data.data,
     enabled: !!getComponentProps.id,
+    retry: false,
   });
 
   return { ...query };

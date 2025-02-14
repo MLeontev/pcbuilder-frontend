@@ -1,4 +1,4 @@
-export interface ComponentResponse {
+export interface ComponentDto {
   id: number;
   imagePath: string;
   fullName: string;

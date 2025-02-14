@@ -8,6 +8,7 @@ export function useComponents(category: string, request: GetComponentsRequest) {
     queryFn: () => componentService.getComponents(category, request),
     select: (data) => data.data,
     placeholderData: keepPreviousData,
+    retry: false,
   });
 
   return { ...query };
