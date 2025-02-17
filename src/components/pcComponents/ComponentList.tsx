@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
-import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
+import { Navigate, useSearchParams } from 'react-router-dom';
 import { useComponents } from '../../hooks/pcComponents/useComponents';
 import { useBuildStore } from '../../store/buildStore';
+import ComponentListItem from './ComponentListItem';
 
 interface ComponentListProps {
   category: string;
@@ -10,7 +11,6 @@ interface ComponentListProps {
 
 export default function ComponentList({ category, title }: ComponentListProps) {
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
 
   const defaultParams = {
     page: '1',
@@ -62,65 +62,62 @@ export default function ComponentList({ category, title }: ComponentListProps) {
   };
 
   return (
-    <div>
-      <h1>{title}</h1>
+    <div className='w-3/4 max-w-4xl mx-auto'>
+      <h1 className='text-3xl font-semibold text-center mt-3 mb-6'>{title}</h1>
 
-      <input
-        type='text'
-        placeholder='Поиск...'
-        value={searchQuery}
-        onChange={(e) => updateSearchParams('searchQuery', e.target.value)}
-      />
-
-      <select
-        value={pageSize}
-        onChange={(e) => updateSearchParams('pageSize', e.target.value)}
-      >
-        {[5, 10, 20, 50].map((size) => (
-          <option key={size} value={size}>
-            {size} на странице
-          </option>
-        ))}
-      </select>
+      <div className='flex items-center justify-between mb-3'>
+        <input
+          type='text'
+          placeholder='Поиск...'
+          value={searchQuery}
+          onChange={(e) => updateSearchParams('searchQuery', e.target.value)}
+          className='p-2 w-1/3 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-1'
+        />
+        <select
+          value={pageSize}
+          onChange={(e) => updateSearchParams('pageSize', e.target.value)}
+          className='border border-gray-300 rounded-lg shadow-md p-2 focus:ring-1'
+        >
+          {[5, 10, 20, 50].map((size) => (
+            <option key={size} value={size}>
+              {size} на странице
+            </option>
+          ))}
+        </select>
+      </div>
 
       <div>
         {data?.items.map((component) => (
-          <div
-            className='max-w-xl border border-solid border-black p-1 m-1 cursor-pointer'
+          <ComponentListItem
             key={component.id}
-            onClick={() => navigate(`/${category}/${component.id}`)}
-          >
-            <h2>{component.fullName}</h2>
-            <p>{component.description}</p>
-            <button
-              onClick={(event) => {
-                event.stopPropagation();
-                addComponent(category || '', component.id);
-              }}
-            >
-              Добавить в сборку
-            </button>
-          </div>
+            component={component}
+            category={category}
+            onAdd={() => addComponent(category, component.id)}
+          />
         ))}
       </div>
 
-      <p>
-        Страница {data?.page} из {data?.totalPages}
-      </p>
+      <div className='flex justify-center gap-3 mt-4'>
+        <button
+          disabled={!data?.hasPreviousPage}
+          onClick={() => updateSearchParams('page', page - 1)}
+          className='px-3 py-1 rounded-lg text-gray-700 bg-gray-200 hover:bg-gray-300 disabled:bg-gray-300 disabled:cursor-not-allowed transition'
+        >
+          Предыдущая
+        </button>
 
-      <button
-        disabled={!data?.hasPreviousPage}
-        onClick={() => updateSearchParams('page', page - 1)}
-      >
-        Предыдущая
-      </button>
+        <span className='self-center'>
+          Страница {data?.page} из {data?.totalPages}
+        </span>
 
-      <button
-        disabled={!data?.hasNextPage}
-        onClick={() => updateSearchParams('page', page + 1)}
-      >
-        Следующая
-      </button>
+        <button
+          disabled={!data?.hasNextPage}
+          onClick={() => updateSearchParams('page', page + 1)}
+          className='px-3 py-1 rounded-lg text-gray-700 bg-gray-200 hover:bg-gray-300 disabled:bg-gray-300 disabled:cursor-not-allowed transition'
+        >
+          Следующая
+        </button>
+      </div>
     </div>
   );
 }
