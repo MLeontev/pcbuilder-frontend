@@ -73,17 +73,25 @@ export default function ComponentList({ category, title }: ComponentListProps) {
           onChange={(e) => updateSearchParams('searchQuery', e.target.value)}
           className='p-2 w-1/3 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-1'
         />
-        <select
-          value={pageSize}
-          onChange={(e) => updateSearchParams('pageSize', e.target.value)}
-          className='border border-gray-300 rounded-lg shadow-md p-2 focus:ring-1'
-        >
-          {[5, 10, 20, 50].map((size) => (
-            <option key={size} value={size}>
-              {size} на странице
-            </option>
-          ))}
-        </select>
+
+        <div className='flex items-center gap-4'>
+          <label className='flex items-center gap-2'>
+            <input type='checkbox' className='w-4 h-4' />
+            <span>Только совместимые со сборкой</span>
+          </label>
+
+          <select
+            value={pageSize}
+            onChange={(e) => updateSearchParams('pageSize', e.target.value)}
+            className='border border-gray-300 rounded-lg shadow-md p-2 focus:ring-1'
+          >
+            {[5, 10, 20, 50].map((size) => (
+              <option key={size} value={size}>
+                {size} на странице
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <div>
