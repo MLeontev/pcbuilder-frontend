@@ -1,5 +1,4 @@
-import { useEffect } from 'react';
-import { Navigate, useSearchParams } from 'react-router-dom';
+import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { useComponents } from '../../hooks/pcComponents/useComponents';
 import { useBuildStore } from '../../store/buildStore';
 import ComponentListItem from './ComponentListItem';
@@ -11,24 +10,13 @@ interface ComponentListProps {
 
 export default function ComponentList({ category, title }: ComponentListProps) {
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   const defaultParams = {
     page: '1',
     pageSize: '10',
     searchQuery: '',
   };
-
-  useEffect(() => {
-    const newSearchParams = new URLSearchParams(searchParams);
-
-    Object.entries(defaultParams).forEach(([key, value]) => {
-      if (!newSearchParams.has(key)) {
-        newSearchParams.set(key, value);
-      }
-    });
-
-    setSearchParams(newSearchParams);
-  }, [searchParams, setSearchParams]);
 
   const page = parseInt(searchParams.get('page') || defaultParams.page);
   const pageSize = parseInt(
@@ -100,7 +88,10 @@ export default function ComponentList({ category, title }: ComponentListProps) {
             key={component.id}
             component={component}
             category={category}
-            onAdd={() => addComponent(category, component.id)}
+            onAdd={() => {
+              addComponent(category, component.id);
+              navigate('/build');
+            }}
           />
         ))}
       </div>
