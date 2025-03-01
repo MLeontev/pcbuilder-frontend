@@ -1,17 +1,16 @@
 import { useNavigate } from 'react-router-dom';
 import { IMAGES_URL } from '../../http';
 import { ComponentDto } from '../../types/pcComponents/ComponentDto';
+import AddToBuildButton from './AddToBuildButton';
 
 interface ComponentListItemProps {
   component: ComponentDto;
   category: string;
-  onAdd: () => void;
 }
 
 export default function ComponentListItem({
   component,
   category,
-  onAdd,
 }: ComponentListItemProps) {
   const navigate = useNavigate();
 
@@ -44,12 +43,7 @@ export default function ComponentListItem({
         </p>
       </div>
 
-      <button
-        className='ml-auto bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition'
-        onClick={onAdd}
-      >
-        Добавить в сборку
-      </button>
+      <AddToBuildButton category={category} componentId={component.id} />
     </div>
   );
 }

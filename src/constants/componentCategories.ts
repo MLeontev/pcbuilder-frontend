@@ -31,8 +31,8 @@ export const componentCategories = [
     singleTitle: 'Кулер',
   },
   {
-    category: 'powerSupply',
-    path: '/powerSupply',
+    category: 'psu',
+    path: '/psu',
     title: 'Блоки питания',
     singleTitle: 'Блок питания',
   },

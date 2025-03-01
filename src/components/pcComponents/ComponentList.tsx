@@ -1,4 +1,5 @@
-import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
+import { Navigate, useSearchParams } from 'react-router-dom';
+import { useCompatibleComponents } from '../../hooks/pcComponents/useCompatibleComponents';
 import { useComponents } from '../../hooks/pcComponents/useComponents';
 import { useBuildStore } from '../../store/buildStore';
 import ComponentListItem from './ComponentListItem';
@@ -10,12 +11,13 @@ interface ComponentListProps {
 
 export default function ComponentList({ category, title }: ComponentListProps) {
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
+  const selectedComponents = useBuildStore((state) => state.selectedComponents);
 
   const defaultParams = {
     page: '1',
     pageSize: '10',
     searchQuery: '',
+    onlyCompatible: 'false',
   };
 
   const page = parseInt(searchParams.get('page') || defaultParams.page);
@@ -24,14 +26,16 @@ export default function ComponentList({ category, title }: ComponentListProps) {
   );
   const searchQuery =
     searchParams.get('searchQuery') || defaultParams.searchQuery;
+  const onlyCompatible = searchParams.get('onlyCompatible') === 'true' || false;
 
-  const addComponent = useBuildStore((state) => state.addComponent);
-
-  const { data, isLoading, isError } = useComponents(category!, {
-    page,
-    pageSize,
-    searchQuery,
-  });
+  const { data, isLoading, isError } = onlyCompatible
+    ? useCompatibleComponents(
+        category,
+        { page, pageSize, searchQuery },
+        selectedComponents
+      )
+    : useComponents(category, { page, pageSize, searchQuery });
+  console.log(data);
 
   if (isLoading) {
     return <div>Загрузка...</div>;
@@ -41,7 +45,10 @@ export default function ComponentList({ category, title }: ComponentListProps) {
     return <Navigate to='/404' />;
   }
 
-  const updateSearchParams = (key: string, value: string | number) => {
+  const updateSearchParams = (
+    key: string,
+    value: string | number | boolean
+  ) => {
     setSearchParams((prev) => {
       const searchParams = new URLSearchParams(prev);
       searchParams.set(key, value.toString());
@@ -64,7 +71,14 @@ export default function ComponentList({ category, title }: ComponentListProps) {
 
         <div className='flex items-center gap-4'>
           <label className='flex items-center gap-2'>
-            <input type='checkbox' className='w-4 h-4' />
+            <input
+              type='checkbox'
+              checked={onlyCompatible}
+              onChange={() =>
+                updateSearchParams('onlyCompatible', !onlyCompatible)
+              }
+              className='w-4 h-4'
+            />
             <span>Только совместимые со сборкой</span>
           </label>
 
@@ -83,39 +97,40 @@ export default function ComponentList({ category, title }: ComponentListProps) {
       </div>
 
       <div>
-        {data?.items.map((component) => (
-          <ComponentListItem
-            key={component.id}
-            component={component}
-            category={category}
-            onAdd={() => {
-              addComponent(category, component.id);
-              navigate('/build');
-            }}
-          />
-        ))}
-      </div>
+        {data?.items.length === 0 ? (
+          <div className='text-center text-xl'>Комплектующих не найдено</div>
+        ) : (
+          <>
+            {data?.items.map((component) => (
+              <ComponentListItem
+                key={component.id}
+                component={component}
+                category={category}
+              />
+            ))}
+            <div className='flex justify-center gap-3 mt-4'>
+              <button
+                disabled={!data?.hasPreviousPage}
+                onClick={() => updateSearchParams('page', page - 1)}
+                className='px-3 py-1 rounded-lg text-gray-700 bg-gray-200 hover:bg-gray-300 disabled:bg-gray-300 disabled:cursor-not-allowed transition'
+              >
+                Предыдущая
+              </button>
 
-      <div className='flex justify-center gap-3 mt-4'>
-        <button
-          disabled={!data?.hasPreviousPage}
-          onClick={() => updateSearchParams('page', page - 1)}
-          className='px-3 py-1 rounded-lg text-gray-700 bg-gray-200 hover:bg-gray-300 disabled:bg-gray-300 disabled:cursor-not-allowed transition'
-        >
-          Предыдущая
-        </button>
+              <span className='self-center'>
+                Страница {data?.page} из {data?.totalPages}
+              </span>
 
-        <span className='self-center'>
-          Страница {data?.page} из {data?.totalPages}
-        </span>
-
-        <button
-          disabled={!data?.hasNextPage}
-          onClick={() => updateSearchParams('page', page + 1)}
-          className='px-3 py-1 rounded-lg text-gray-700 bg-gray-200 hover:bg-gray-300 disabled:bg-gray-300 disabled:cursor-not-allowed transition'
-        >
-          Следующая
-        </button>
+              <button
+                disabled={!data?.hasNextPage}
+                onClick={() => updateSearchParams('page', page + 1)}
+                className='px-3 py-1 rounded-lg text-gray-700 bg-gray-200 hover:bg-gray-300 disabled:bg-gray-300 disabled:cursor-not-allowed transition'
+              >
+                Следующая
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

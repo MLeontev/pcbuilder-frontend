@@ -5,7 +5,7 @@ export default function MainLayout() {
   return (
     <div className='flex flex-col h-screen'>
       <NavBar />
-      <main className='flex-grow w-full mx-auto'>
+      <main className='flex-grow w-full mx-auto pb-5'>
         <Outlet />
       </main>
     </div>

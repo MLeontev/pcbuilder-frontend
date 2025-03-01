@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { componentCategories } from '../../constants/componentCategories';
 import { useCheckCompatibility } from '../../hooks/builds/useCheckCompatibility';
+import useGenerateExcelReport from '../../hooks/builds/useGenerateExcelReport';
+import useGeneratePdfReport from '../../hooks/builds/useGeneratePdfReport';
 import { useBuildStore } from '../../store/buildStore';
 import BuildComponent from './BuildComponent';
 import MultiBuildComponent from './MultiBuildComponent';
@@ -35,6 +37,8 @@ export default function BuildPage() {
   const selectedComponents = useBuildStore((state) => state.selectedComponents);
   const removeComponent = useBuildStore((state) => state.removeComponent);
   const checkCompatibility = useCheckCompatibility();
+  const generateExcelReport = useGenerateExcelReport();
+  const generatePdfReport = useGeneratePdfReport();
 
   const compatibilityData = checkCompatibility.data?.data;
   const status = compatibilityData?.status;
@@ -53,11 +57,9 @@ export default function BuildPage() {
       <div className='flex-1'>
         <h2 className='text-xl font-semibold mb-6'>Выбранные комплектующие</h2>
 
-        {componentCategories.map(({ category, title, singleTitle, path }) => (
+        {componentCategories.map(({ category, singleTitle, path }) => (
           <div className='my-3' key={category}>
-            <h3 className='font-medium text-lg mb-1'>
-              {['ram', 'storage'].includes(category) ? title : singleTitle}
-            </h3>
+            <h3 className='font-medium text-lg mb-1'>{singleTitle}</h3>
             {['ram', 'storage'].includes(category) ? (
               <MultiBuildComponent
                 ids={
@@ -84,7 +86,7 @@ export default function BuildPage() {
         ))}
       </div>
 
-      <div className='w-1/2 p-4 border border-gray-300 rounded-lg shadow-md'>
+      <div className='w-1/2 p-4 border border-gray-300 rounded-lg shadow-md self-start'>
         <h2 className='text-xl font-semibold mb-4'>Проверка совместимости</h2>
 
         {checkCompatibility.isPending && (
@@ -113,6 +115,30 @@ export default function BuildPage() {
             })}
           </>
         )}
+        <button
+          className='px-3 py-1 text-blue-500 border border-blue-500 rounded-lg hover:bg-blue-100 transition'
+          onClick={() =>
+            generateExcelReport.mutate({
+              name: null,
+              description: null,
+              components: selectedComponents,
+            })
+          }
+        >
+          Сохранить в Excel
+        </button>
+        <button
+          className='px-3 py-1 text-blue-500 border border-blue-500 rounded-lg hover:bg-blue-100 transition'
+          onClick={() =>
+            generatePdfReport.mutate({
+              name: null,
+              description: null,
+              components: selectedComponents,
+            })
+          }
+        >
+          Сохранить в PDF
+        </button>
       </div>
     </div>
   );
