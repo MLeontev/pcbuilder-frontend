@@ -20,9 +20,9 @@ export default function MultiBuildComponent({
     <div>
       {ids && ids.length > 0 ? (
         <>
-          {ids.map((id) => (
+          {ids.map((id, index) => (
             <BuildComponent
-              key={id}
+              key={`${id}-${index}`}
               id={id}
               category={category}
               onRemove={() => onRemove(id)}

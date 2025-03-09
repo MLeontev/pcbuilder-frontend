@@ -3,6 +3,9 @@ import { componentCategories } from '../../constants/componentCategories';
 import { useCheckCompatibility } from '../../hooks/builds/useCheckCompatibility';
 import useGenerateExcelReport from '../../hooks/builds/useGenerateExcelReport';
 import useGeneratePdfReport from '../../hooks/builds/useGeneratePdfReport';
+import { useSaveBuild } from '../../hooks/builds/useSaveBuild';
+import { useUpdateBuild } from '../../hooks/builds/useUpdateBuild';
+import { useAuthStore } from '../../store/authStore';
 import { useBuildStore } from '../../store/buildStore';
 import BuildComponent from './BuildComponent';
 import MultiBuildComponent from './MultiBuildComponent';
@@ -34,11 +37,27 @@ const getErrorStatusLabel = (status: number) => {
 };
 
 export default function BuildPage() {
+  const isAuth = useAuthStore((state) => state.isAuth);
+
   const selectedComponents = useBuildStore((state) => state.selectedComponents);
+  const buildId = useBuildStore((state) => state.buildId);
+  const buildName = useBuildStore((state) => state.buildName);
+  const buildDescription = useBuildStore((state) => state.buildDescription);
+  const updateBuildInfo = useBuildStore((state) => state.updateBuildInfo);
   const removeComponent = useBuildStore((state) => state.removeComponent);
+  const clearBuild = useBuildStore((state) => state.clearBuild);
+
+  const buildData = {
+    name: buildName,
+    description: buildDescription,
+    components: selectedComponents,
+  };
+
   const checkCompatibility = useCheckCompatibility();
   const generateExcelReport = useGenerateExcelReport();
   const generatePdfReport = useGeneratePdfReport();
+  const { mutate: saveBuild, isPending: isSaving } = useSaveBuild();
+  const { mutate: updateBuild, isPending: isUpdating } = useUpdateBuild();
 
   const compatibilityData = checkCompatibility.data?.data;
   const status = compatibilityData?.status;
@@ -48,6 +67,42 @@ export default function BuildPage() {
   const warnings = errors.filter((e) => e.status === 1);
   const notes = errors.filter((e) => e.status === 0);
 
+  const handleSaveBuild = () => {
+    if (!isAuth) {
+      alert('Войдите в систему, чтобы сохранить сборку');
+      return;
+    }
+
+    if (!buildName.trim()) {
+      alert('Название сборки обязательно для заполнения');
+      return;
+    }
+
+    saveBuild(buildData);
+  };
+
+  const handleUpdateBuild = () => {
+    if (!buildName.trim()) {
+      alert('Название сборки обязательно для заполнения');
+      return;
+    }
+    if (buildId) {
+      updateBuild({ buildId, build: buildData });
+    }
+  };
+
+  const handleGenerateReport = (reportType: 'excel' | 'pdf') => {
+    if (!buildName.trim()) {
+      alert('Название сборки обязательно для заполнения');
+      return;
+    }
+    if (reportType === 'excel') {
+      generateExcelReport.mutate(buildData);
+    } else {
+      generatePdfReport.mutate(buildData);
+    }
+  };
+
   useEffect(() => {
     checkCompatibility.mutate(selectedComponents);
   }, [selectedComponents]);
@@ -55,7 +110,28 @@ export default function BuildPage() {
   return (
     <div className='mx-auto w-3/4 flex gap-6 mt-6'>
       <div className='flex-1'>
-        <h2 className='text-xl font-semibold mb-6'>Выбранные комплектующие</h2>
+        <label htmlFor='build-name' className='block font-medium mb-1'>
+          Название сборки
+        </label>
+        <input
+          id='build-name'
+          type='text'
+          value={buildName}
+          onChange={(e) => updateBuildInfo(e.target.value, buildDescription)}
+          placeholder='Введите название сборки'
+          className='border p-2 w-full mb-2 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-1'
+        />
+
+        <label htmlFor='build-description' className='block font-medium mb-1'>
+          Описание сборки
+        </label>
+        <textarea
+          id='build-description'
+          value={buildDescription}
+          onChange={(e) => updateBuildInfo(buildName, e.target.value)}
+          placeholder='Введите описание сборки'
+          className='border p-2 w-full mb-2 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-1'
+        />
 
         {componentCategories.map(({ category, singleTitle, path }) => (
           <div className='my-3' key={category}>
@@ -107,7 +183,7 @@ export default function BuildPage() {
                   <h3 className={`font-semibold ${className}`}>{label}:</h3>
                   {group.map((error, idx) => (
                     <p key={idx} className={className}>
-                      {error.message}
+                      ▸ {error.message}
                     </p>
                   ))}
                 </div>
@@ -115,30 +191,50 @@ export default function BuildPage() {
             })}
           </>
         )}
-        <button
-          className='px-3 py-1 text-blue-500 border border-blue-500 rounded-lg hover:bg-blue-100 transition'
-          onClick={() =>
-            generateExcelReport.mutate({
-              name: null,
-              description: null,
-              components: selectedComponents,
-            })
-          }
-        >
-          Сохранить в Excel
-        </button>
-        <button
-          className='px-3 py-1 text-blue-500 border border-blue-500 rounded-lg hover:bg-blue-100 transition'
-          onClick={() =>
-            generatePdfReport.mutate({
-              name: null,
-              description: null,
-              components: selectedComponents,
-            })
-          }
-        >
-          Сохранить в PDF
-        </button>
+
+        <div className='mt-5 space-y-2'>
+          <div className='flex gap-2'>
+            <button
+              className='px-3 py-1 text-blue-500 border border-blue-500 rounded hover:bg-blue-100 transition flex-1'
+              onClick={() => handleGenerateReport('excel')}
+            >
+              Сохранить в Excel
+            </button>
+            <button
+              className='px-3 py-1 text-blue-500 border border-blue-500 rounded hover:bg-blue-100 transition flex-1'
+              onClick={() => handleGenerateReport('pdf')}
+            >
+              Сохранить в PDF
+            </button>
+          </div>
+
+          <div className='flex gap-2'>
+            <button
+              onClick={handleSaveBuild}
+              disabled={isSaving}
+              className='bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition flex-1'
+            >
+              {isSaving ? 'Сохранение...' : 'Сохранить сборку как новую'}
+            </button>
+
+            {buildId && (
+              <button
+                onClick={handleUpdateBuild}
+                disabled={isUpdating}
+                className='bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition flex-1'
+              >
+                {isSaving ? 'Обновление...' : 'Сохранить изменения'}
+              </button>
+            )}
+          </div>
+
+          <button
+            onClick={clearBuild}
+            className='w-full bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600 transition'
+          >
+            Начать новую сборку
+          </button>
+        </div>
       </div>
     </div>
   );

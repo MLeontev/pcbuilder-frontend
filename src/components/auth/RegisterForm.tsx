@@ -1,5 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { Link } from 'react-router-dom';
 import * as yup from 'yup';
 import { useRegister } from '../../hooks/auth/useRegister';
 import { getErrorMessage } from '../../utils/errorUtils';
@@ -52,40 +53,49 @@ export default function RegisterForm() {
   };
 
   return (
-    <>
-      <h1>Регистрация</h1>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <FormInput
-          type='text'
-          placeholder='Логин'
-          register={register}
-          name='username'
-          error={errors.username}
-        />
+    <div className='flex justify-center items-center mt-60'>
+      <div className='border border-gray-300 rounded-lg shadow-md p-8 w-full max-w-sm'>
+        <h1 className='text-2xl font-semibold text-center mb-6'>Регистрация</h1>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <FormInput
+            type='text'
+            placeholder='Логин'
+            register={register}
+            name='username'
+            error={errors.username}
+          />
 
-        <FormInput
-          type='password'
-          placeholder='Пароль'
-          register={register}
-          name='password'
-          error={errors.password}
-        />
+          <FormInput
+            type='password'
+            placeholder='Пароль'
+            register={register}
+            name='password'
+            error={errors.password}
+          />
 
-        <FormInput
-          type='password'
-          placeholder='Повторите пароль'
-          register={register}
-          name='confirmPassword'
-          error={errors.confirmPassword}
-        />
+          <FormInput
+            type='password'
+            placeholder='Повторите пароль'
+            register={register}
+            name='confirmPassword'
+            error={errors.confirmPassword}
+          />
 
-        {error && <ErrorMessage message={getErrorMessage(error)} />}
+          {error && <ErrorMessage message={getErrorMessage(error)} />}
 
-        <SubmitButton
-          disabled={isSubmitting || isPending}
-          text='Зарегистрироваться'
-        />
-      </form>
-    </>
+          <SubmitButton
+            disabled={isSubmitting || isPending}
+            text='Зарегистрироваться'
+          />
+        </form>
+
+        <p className='text-center text-sm text-gray-600 mt-4'>
+          Уже есть аккаунт?{' '}
+          <Link to='/login' className='text-blue-500 hover:underline'>
+            Войти
+          </Link>
+        </p>
+      </div>
+    </div>
   );
 }

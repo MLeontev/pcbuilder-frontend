@@ -1,7 +1,6 @@
 import { Navigate, useParams } from 'react-router-dom';
 import { useComponent } from '../../hooks/pcComponents/useComponent';
 import { IMAGES_URL } from '../../http';
-import { useBuildStore } from '../../store/buildStore';
 import AddToBuildButton from './AddToBuildButton';
 
 export default function ComponentPage() {
@@ -11,8 +10,6 @@ export default function ComponentPage() {
   if (isNaN(componentId) || !category) {
     return <Navigate to='/404' />;
   }
-
-  const addComponent = useBuildStore((state) => state.addComponent);
 
   const { isPending, isError, data } = useComponent({
     id: parseInt(id || '0'),
