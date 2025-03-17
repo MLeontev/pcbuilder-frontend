@@ -13,11 +13,11 @@ import MultiBuildComponent from './MultiBuildComponent';
 const getStatusText = (status: number) => {
   switch (status) {
     case 0:
-      return '✅ Все совместимо';
+      return '✅ Совместима';
     case 1:
-      return '⚠️ Совместимо с ограничениями';
+      return '⚠️ Совместима с ограничениями';
     case 2:
-      return '❌ Несовместимо';
+      return '❌ Несовместима';
     default:
       return '❓ Статус неизвестен';
   }
@@ -26,13 +26,13 @@ const getStatusText = (status: number) => {
 const getErrorStatusLabel = (status: number) => {
   switch (status) {
     case 0:
-      return { label: 'ℹ️ Заметка', className: 'text-blue-500' };
+      return { label: 'ℹ️ Заметки', className: 'text-blue-500' };
     case 1:
-      return { label: '⚠️ Предупреждение', className: 'text-orange-500' };
+      return { label: '⚠️ Предупреждения', className: 'text-orange-500' };
     case 2:
-      return { label: '❌ Ошибка', className: 'text-red-600' };
+      return { label: '❌ Ошибки', className: 'text-red-600' };
     default:
-      return { label: '❓ Неизвестно', className: 'text-gray-500' };
+      return { label: '❓ Неизвестные', className: 'text-gray-500' };
   }
 };
 
@@ -74,7 +74,7 @@ export default function BuildPage() {
     }
 
     if (!buildName.trim()) {
-      alert('Название сборки обязательно для заполнения');
+      alert('Введите название сборки');
       return;
     }
 
@@ -83,7 +83,7 @@ export default function BuildPage() {
 
   const handleUpdateBuild = () => {
     if (!buildName.trim()) {
-      alert('Название сборки обязательно для заполнения');
+      alert('Введите название сборки');
       return;
     }
     if (buildId) {
@@ -92,10 +92,6 @@ export default function BuildPage() {
   };
 
   const handleGenerateReport = (reportType: 'excel' | 'pdf') => {
-    if (!buildName.trim()) {
-      alert('Название сборки обязательно для заполнения');
-      return;
-    }
     if (reportType === 'excel') {
       generateExcelReport.mutate(buildData);
     } else {
@@ -163,7 +159,7 @@ export default function BuildPage() {
       </div>
 
       <div className='w-1/2 p-4 border border-gray-300 rounded-lg shadow-md self-start'>
-        <h2 className='text-xl font-semibold mb-4'>Проверка совместимости</h2>
+        <h2 className='text-xl font-semibold mb-4'>Совместимость сборки</h2>
 
         {checkCompatibility.isPending && (
           <p className='text-gray-500'>🔄 Проверка...</p>
@@ -180,7 +176,7 @@ export default function BuildPage() {
 
               return (
                 <div key={index}>
-                  <h3 className={`font-semibold ${className}`}>{label}:</h3>
+                  <h3 className='font-semibold mt-4'>{label}:</h3>
                   {group.map((error, idx) => (
                     <p key={idx} className={className}>
                       ▸ {error.message}

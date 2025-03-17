@@ -25,9 +25,9 @@ export default function BuildListItem({ build }: BuildListItemProps) {
   return (
     <div className='flex items-center border border-gray-400 p-4 my-2 rounded-lg shadow-sm gap-1'>
       <div className='flex-1 ml-4'>
-        <h2>{build.name}</h2>
+        <h2 className='font-medium'>{build.name}</h2>
         <p>{build.description}</p>
-        <div className='flex flex-row w-full gap-10 mt-2'>
+        <div className='flex flex-row w-full gap-10 mt-2 text-gray-600'>
           <p>Изменено: {build.updatedAt}</p>
           <p>Создано: {build.createdAt}</p>
         </div>

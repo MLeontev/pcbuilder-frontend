@@ -36,12 +36,12 @@ export default function BuildComponent({
       ) : component.data ? (
         <>
           <div
-            className='w-20 h-20 flex-shrink-0 cursor-pointer'
+            className='w-20 h-20 flex-shrink-0 cursor-pointer flex items-center justify-center'
             onClick={() => navigate(`/${category}/${component.data.id}`)}
           >
             {component.data.imagePath ? (
               <img
-                className='w-full h-full rounded-lg'
+                className='rounded-lg'
                 src={`${IMAGES_URL}${component.data.imagePath}`}
                 alt={component.data.name}
               />

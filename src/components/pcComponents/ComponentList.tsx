@@ -19,7 +19,7 @@ export default function ComponentList({ category, title }: ComponentListProps) {
 
   const defaultParams = {
     page: '1',
-    pageSize: '10',
+    pageSize: '5',
     searchQuery: '',
     onlyCompatible: 'false',
   };

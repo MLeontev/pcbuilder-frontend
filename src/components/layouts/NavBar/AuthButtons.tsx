@@ -13,14 +13,17 @@ export default function AuthButtons() {
       {isAuth ? (
         <div className='flex items-center space-x-4'>
           <span
-            className='font-semibold cursor-pointer'
+            className='font-semibold cursor-pointer hover:text-gray-400 transition'
             onClick={() => navigate('/builds')}
           >
             {user?.userName}
           </span>
           <button
             className='px-4 py-1 rounded-lg transition bg-gray-200 text-black hover:bg-gray-400 font-semibold'
-            onClick={() => logout()}
+            onClick={() => {
+              logout();
+              navigate('/');
+            }}
           >
             Выход
           </button>

@@ -14,7 +14,7 @@ export default function BuildList() {
 
   const defaultParams = {
     page: '1',
-    pageSize: '10',
+    pageSize: '5',
     searchQuery: '',
     onlyCompatible: 'false',
   };

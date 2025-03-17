@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { componentCategories } from '../constants/componentCategories';
 import { useCheckAuth } from '../hooks/auth/useCheckAuth';
-import { useLogout } from '../hooks/auth/useLogout';
 import { useAuthStore } from '../store/authStore';
 import LoginForm from './auth/LoginForm';
 import RegisterForm from './auth/RegisterForm';
@@ -57,5 +56,9 @@ export default function AppRouter() {
 }
 
 function NotFoundPage() {
-  return <h1>404 — Страница не найдена</h1>;
+  return (
+    <h1 className='text-2xl font-bold text-center mt-6'>
+      404 — Страница не найдена
+    </h1>
+  );
 }
