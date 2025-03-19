@@ -1,4 +1,3 @@
-import { Navigate } from 'react-router-dom';
 import { useCompatibleComponents } from '../../hooks/pcComponents/useCompatibleComponents';
 import { useComponents } from '../../hooks/pcComponents/useComponents';
 import { useUpdateSearchParams } from '../../hooks/useUpdateSearchParams';
@@ -21,7 +20,7 @@ export default function ComponentList({ category, title }: ComponentListProps) {
     page: '1',
     pageSize: '5',
     searchQuery: '',
-    onlyCompatible: 'false',
+    onlyCompatible: 'true',
   };
 
   const page = parseInt(searchParams.get('page') || defaultParams.page);
@@ -30,7 +29,7 @@ export default function ComponentList({ category, title }: ComponentListProps) {
   );
   const searchQuery =
     searchParams.get('searchQuery') || defaultParams.searchQuery;
-  const onlyCompatible = searchParams.get('onlyCompatible') === 'true' || false;
+  const onlyCompatible = searchParams.get('onlyCompatible') !== 'false';
 
   const { data, isLoading, isError } = onlyCompatible
     ? useCompatibleComponents(
@@ -45,7 +44,11 @@ export default function ComponentList({ category, title }: ComponentListProps) {
   }
 
   if (isError) {
-    return <Navigate to='/404' />;
+    return (
+      <div className='text-center text-xl'>
+        Не удалось загрузить комплектующие
+      </div>
+    );
   }
 
   return (
@@ -55,7 +58,7 @@ export default function ComponentList({ category, title }: ComponentListProps) {
       <div className='flex items-center justify-between mb-3'>
         <SearchBar
           searchQuery={searchQuery}
-          onSearchChange={(value) => updateSearchParams('searchQuery', value)}
+          onSearchChange={(value) => updateSearchParams({ searchQuery: value })}
         />
         <div className='flex items-center gap-4'>
           <label className='flex items-center gap-2'>
@@ -63,16 +66,18 @@ export default function ComponentList({ category, title }: ComponentListProps) {
               type='checkbox'
               checked={onlyCompatible}
               onChange={() =>
-                updateSearchParams('onlyCompatible', !onlyCompatible)
+                updateSearchParams({ onlyCompatible: !onlyCompatible })
               }
               className='w-4 h-4'
             />
-            <span>Только совместимые со сборкой</span>
+            <span>Показать только совместимые со сборкой</span>
           </label>
 
           <PageSizeSelector
             pageSize={pageSize}
-            onPageSizeChange={(value) => updateSearchParams('pageSize', value)}
+            onPageSizeChange={(value) =>
+              updateSearchParams({ pageSize: value, page: '1' })
+            }
           />
         </div>
       </div>
@@ -94,7 +99,7 @@ export default function ComponentList({ category, title }: ComponentListProps) {
               totalPages={data?.totalPages!}
               hasPreviousPage={data?.hasPreviousPage!}
               hasNextPage={data?.hasNextPage!}
-              onPageChange={(newPage) => updateSearchParams('page', newPage)}
+              onPageChange={(newPage) => updateSearchParams({ page: newPage })}
             />
           </>
         )}

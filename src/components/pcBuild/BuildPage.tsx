@@ -78,6 +78,11 @@ export default function BuildPage() {
       return;
     }
 
+    if (buildName.length > 100) {
+      alert('Название не должно быть длиннее 100 символов');
+      return;
+    }
+
     saveBuild(buildData);
   };
 
@@ -86,6 +91,12 @@ export default function BuildPage() {
       alert('Введите название сборки');
       return;
     }
+
+    if (buildName.length > 100) {
+      alert('Название не должно быть длиннее 100 символов');
+      return;
+    }
+
     if (buildId) {
       updateBuild({ buildId, build: buildData });
     }
@@ -96,6 +107,16 @@ export default function BuildPage() {
       generateExcelReport.mutate(buildData);
     } else {
       generatePdfReport.mutate(buildData);
+    }
+  };
+
+  const handleClearBuild = () => {
+    if (
+      window.confirm(
+        'Ваша текущая сборка не будет сохранена автоматически. Вы уверены, что хотите начать новую сборку?'
+      )
+    ) {
+      clearBuild();
     }
   };
 
@@ -205,14 +226,6 @@ export default function BuildPage() {
           </div>
 
           <div className='flex gap-2'>
-            <button
-              onClick={handleSaveBuild}
-              disabled={isSaving}
-              className='bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition flex-1'
-            >
-              {isSaving ? 'Сохранение...' : 'Сохранить сборку как новую'}
-            </button>
-
             {buildId && (
               <button
                 onClick={handleUpdateBuild}
@@ -222,10 +235,17 @@ export default function BuildPage() {
                 {isSaving ? 'Обновление...' : 'Сохранить изменения'}
               </button>
             )}
+            <button
+              onClick={handleSaveBuild}
+              disabled={isSaving}
+              className='bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition flex-1'
+            >
+              {isSaving ? 'Сохранение...' : 'Сохранить сборку как новую'}
+            </button>
           </div>
 
           <button
-            onClick={clearBuild}
+            onClick={handleClearBuild}
             className='w-full bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600 transition'
           >
             Начать новую сборку

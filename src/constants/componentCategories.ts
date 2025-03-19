@@ -27,8 +27,8 @@ export const componentCategories = [
   {
     category: 'cooler',
     path: '/cooler',
-    title: 'Охлаждение',
-    singleTitle: 'Кулер',
+    title: 'Охлаждение процессора',
+    singleTitle: 'Охлаждение процессора',
   },
   {
     category: 'psu',

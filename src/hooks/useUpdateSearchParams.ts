@@ -4,12 +4,13 @@ export function useUpdateSearchParams() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const updateSearchParams = (
-    key: string,
-    value: string | number | boolean
+    updates: Record<string, string | number | boolean>
   ) => {
     setSearchParams((prev) => {
       const searchParams = new URLSearchParams(prev);
-      searchParams.set(key, value.toString());
+      Object.entries(updates).forEach(([key, value]) => {
+        searchParams.set(key, value.toString());
+      });
       return searchParams;
     });
   };

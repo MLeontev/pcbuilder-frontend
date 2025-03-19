@@ -1,4 +1,4 @@
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useBuilds } from '../../hooks/builds/useBuilds';
 import { useUpdateSearchParams } from '../../hooks/useUpdateSearchParams';
 import { useBuildStore } from '../../store/buildStore';
@@ -16,7 +16,6 @@ export default function BuildList() {
     page: '1',
     pageSize: '5',
     searchQuery: '',
-    onlyCompatible: 'false',
   };
 
   const page = parseInt(searchParams.get('page') || defaultParams.page);
@@ -37,12 +36,20 @@ export default function BuildList() {
   }
 
   if (isError) {
-    return <Navigate to='/404' />;
+    return (
+      <div className='text-center text-xl'>Не удалось загрузить сборки</div>
+    );
   }
 
   const handleNewBuild = () => {
-    clearBuild();
-    navigate('/build');
+    if (
+      window.confirm(
+        'Ваша текущая сборка не будет сохранена автоматически. Вы уверены, что хотите начать новую сборку?'
+      )
+    ) {
+      clearBuild();
+      navigate('/build');
+    }
   };
 
   return (
@@ -54,12 +61,14 @@ export default function BuildList() {
       <div className='flex items-center justify-between mb-3'>
         <SearchBar
           searchQuery={searchQuery}
-          onSearchChange={(value) => updateSearchParams('searchQuery', value)}
+          onSearchChange={(value) => updateSearchParams({ searchQuery: value })}
         />
         <div className='flex items-center gap-4'>
           <PageSizeSelector
             pageSize={pageSize}
-            onPageSizeChange={(value) => updateSearchParams('pageSize', value)}
+            onPageSizeChange={(value) => {
+              updateSearchParams({ pageSize: value, page: '1' });
+            }}
           />
           <button
             onClick={handleNewBuild}
@@ -72,7 +81,7 @@ export default function BuildList() {
 
       <div>
         {data?.items.length === 0 ? (
-          <div className='text-center text-xl'>Нет сохраненных сборок</div>
+          <div className='text-center text-xl'>Сборки не найдены</div>
         ) : (
           <>
             {data?.items.map((build) => (
@@ -83,7 +92,7 @@ export default function BuildList() {
               totalPages={data?.totalPages!}
               hasPreviousPage={data?.hasPreviousPage!}
               hasNextPage={data?.hasNextPage!}
-              onPageChange={(newPage) => updateSearchParams('page', newPage)}
+              onPageChange={(newPage) => updateSearchParams({ page: newPage })}
             />
           </>
         )}

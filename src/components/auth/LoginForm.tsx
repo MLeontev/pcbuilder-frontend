@@ -40,7 +40,7 @@ export default function LoginForm() {
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormInput
             type='text'
-            placeholder='Логин'
+            placeholder='Введите логин'
             register={register}
             name='username'
             error={errors.username}

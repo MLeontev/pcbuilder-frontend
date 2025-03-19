@@ -59,7 +59,7 @@ export default function RegisterForm() {
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormInput
             type='text'
-            placeholder='Логин'
+            placeholder='Введите логин'
             register={register}
             name='username'
             error={errors.username}
@@ -67,7 +67,7 @@ export default function RegisterForm() {
 
           <FormInput
             type='password'
-            placeholder='Пароль'
+            placeholder='Введите пароль'
             register={register}
             name='password'
             error={errors.password}
