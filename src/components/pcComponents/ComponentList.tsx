@@ -84,7 +84,7 @@ export default function ComponentList({ category, title }: ComponentListProps) {
 
       <div>
         {data?.items.length === 0 ? (
-          <div className='text-center text-xl'>Комплектующих не найдено</div>
+          <div className='text-center text-xl'>Комплектующие не найдены</div>
         ) : (
           <>
             {data?.items.map((component) => (
