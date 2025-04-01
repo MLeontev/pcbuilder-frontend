@@ -1,22 +1,23 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
+import { BuildComponentIds } from '../types/builds/BuildComponentIds';
+import { BuildDetailsDto } from '../types/builds/BuildDetailsDto';
 
 type BuildStoreState = {
-  selectedComponents: {
-    cpuId: number | null;
-    motherboardId: number | null;
-    gpuId: number | null;
-    coolerId: number | null;
-    ramIds: number[];
-    storageIds: number[];
-    caseId: number | null;
-    psuId: number | null;
-  };
+  buildId: number | null;
+  buildName: string;
+  buildDescription: string;
+  selectedComponents: BuildComponentIds;
 };
 
 type BuildStoreActions = {
   addComponent: (componentType: string, componentId: number) => void;
   removeComponent: (componentType: string, componentId: number) => void;
+  setBuild: (build: BuildDetailsDto) => void;
+  clearBuild: () => void;
+  resetBuildId: () => void;
+  updateBuildInfo: (name: string, description: string) => void;
+  setBuildId: (id: number) => void;
 };
 
 type BuildStore = BuildStoreState & BuildStoreActions;
@@ -25,6 +26,9 @@ export const useBuildStore = create<BuildStore>()(
   devtools(
     persist(
       (set) => ({
+        buildId: null,
+        buildName: '',
+        buildDescription: '',
         selectedComponents: {
           cpuId: null,
           motherboardId: null,
@@ -128,6 +132,54 @@ export const useBuildStore = create<BuildStore>()(
 
             return { selectedComponents: newSelectedComponents };
           });
+        },
+
+        setBuild: (build) => {
+          set({
+            buildId: build.id,
+            buildName: build.name,
+            buildDescription: build.description ?? '',
+            selectedComponents: {
+              cpuId: build.components.cpuId,
+              motherboardId: build.components.motherboardId,
+              gpuId: build.components.gpuId,
+              coolerId: build.components.coolerId,
+              ramIds: build.components.ramIds,
+              storageIds: build.components.storageIds,
+              caseId: build.components.caseId,
+              psuId: build.components.psuId,
+            },
+          });
+        },
+
+        clearBuild: () => {
+          set({
+            buildId: null,
+            buildName: '',
+            buildDescription: '',
+            selectedComponents: {
+              cpuId: null,
+              motherboardId: null,
+              gpuId: null,
+              coolerId: null,
+              ramIds: [],
+              storageIds: [],
+              caseId: null,
+              psuId: null,
+            },
+          });
+        },
+
+        resetBuildId: () => {
+          set({ buildId: null });
+        },
+
+        setBuildId: (id: number) => {
+          set({ buildId: id });
+        },
+
+        updateBuildInfo: (name, description) => {
+          set({ buildName: name, buildDescription: description });
         },
       }),
       {

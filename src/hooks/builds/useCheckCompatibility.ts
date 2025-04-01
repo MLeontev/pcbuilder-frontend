@@ -7,9 +7,6 @@ export function useCheckCompatibility() {
     mutationKey: ['checkCompatibility'],
     mutationFn: (components: BuildComponentIds) =>
       buildService.checkCompatibility(components),
-    onSuccess(data) {
-      console.log(data.data);
-    },
     onError: (error) => {
       console.error(error);
     },

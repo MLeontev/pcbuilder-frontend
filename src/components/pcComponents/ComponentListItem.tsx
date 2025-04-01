@@ -17,12 +17,12 @@ export default function ComponentListItem({
   return (
     <div className='flex items-center border border-gray-400 p-4 my-2 rounded-lg shadow-sm'>
       <div
-        className='w-20 h-20 flex-shrink-0 cursor-pointer'
+        className='w-32 h-32 flex-shrink-0 cursor-pointer flex justify-center items-center'
         onClick={() => navigate(`/${category}/${component.id}`)}
       >
         {component.imagePath ? (
           <img
-            className='w-full h-full rounded-lg'
+            className='rounded-lg mx-auto'
             src={`${IMAGES_URL}${component.imagePath}`}
             alt='Нет изображения'
           />
@@ -37,7 +37,9 @@ export default function ComponentListItem({
         className='flex-1 ml-4 cursor-pointer'
         onClick={() => navigate(`/${category}/${component.id}`)}
       >
-        <h2 className='hover:text-gray-500 transition'>{component.fullName}</h2>
+        <h2 className='hover:text-gray-500 font-medium transition'>
+          {component.fullName}
+        </h2>
         <p className='hover:text-gray-500 transition'>
           {component.description}
         </p>

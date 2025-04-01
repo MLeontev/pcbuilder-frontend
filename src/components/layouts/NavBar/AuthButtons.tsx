@@ -1,35 +1,44 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useLogout } from '../../../hooks/auth/useLogout';
 import { useAuthStore } from '../../../store/authStore';
 
 export default function AuthButtons() {
   const isAuth = useAuthStore((state) => state.isAuth);
   const user = useAuthStore((state) => state.user);
+  const navigate = useNavigate();
   const { mutate: logout } = useLogout();
 
   return (
     <div>
       {isAuth ? (
         <div className='flex items-center space-x-4'>
-          <span>{user?.userName}</span>
+          <span
+            className='font-semibold cursor-pointer hover:text-gray-400 transition'
+            onClick={() => navigate('/builds')}
+          >
+            {user?.userName}
+          </span>
           <button
-            className='bg-red-500 px-4 py-1 rounded hover:bg-red-700'
-            onClick={() => logout()}
+            className='px-4 py-1 rounded-lg transition bg-gray-200 text-black hover:bg-gray-400 font-semibold'
+            onClick={() => {
+              logout();
+              navigate('/');
+            }}
           >
             Выход
           </button>
         </div>
       ) : (
-        <div className='flex items-center space-x-4'>
+        <div className='flex items-center space-x-2'>
           <Link
-            to='/auth/login'
-            className='bg-blue-500 px-4 py-1 rounded hover:bg-blue-700'
+            to='/login'
+            className='px-4 py-1 rounded-lg transition bg-gray-200 text-black hover:bg-gray-400 font-semibold'
           >
             Вход
           </Link>
           <Link
-            to='/auth/register'
-            className='bg-green-500 px-4 py-1 rounded hover:bg-green-700'
+            to='/register'
+            className='px-4 py-1 rounded-lg transition bg-gray-200 text-black hover:bg-gray-400 font-semibold'
           >
             Регистрация
           </Link>

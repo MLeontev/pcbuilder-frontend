@@ -5,7 +5,7 @@ import { BuildComponentIds } from '../types/builds/BuildComponentIds';
 import { ComponentDetailsDto } from '../types/pcComponents/ComponentDetailsDto';
 import { ComponentDto } from '../types/pcComponents/ComponentDto';
 import { GetComponentsRequest } from '../types/pcComponents/GetComponentsRequest';
-import { GetComponentsResponse } from '../types/pcComponents/GetComponentsResponse';
+import { PagedResponse } from '../types/shared/PagedResponse';
 
 export default class componentService {
   static async getComponentById(
@@ -18,8 +18,8 @@ export default class componentService {
   static async getComponents(
     category: string,
     request: GetComponentsRequest
-  ): Promise<AxiosResponse<GetComponentsResponse<ComponentDto>>> {
-    return api.get<GetComponentsResponse<ComponentDto>>(`/${category}`, {
+  ): Promise<AxiosResponse<PagedResponse<ComponentDto>>> {
+    return api.get<PagedResponse<ComponentDto>>(`/${category}`, {
       params: request,
     });
   }
@@ -28,14 +28,11 @@ export default class componentService {
     category: string,
     request: GetComponentsRequest,
     buildComponentIds: BuildComponentIds
-  ): Promise<AxiosResponse<GetComponentsResponse<ComponentDto>>> {
-    return api.get<GetComponentsResponse<ComponentDto>>(
-      `/${category}/compatible`,
-      {
-        params: { ...request, ...buildComponentIds },
-        paramsSerializer: (params) =>
-          qs.stringify(params, { arrayFormat: 'repeat' }),
-      }
-    );
+  ): Promise<AxiosResponse<PagedResponse<ComponentDto>>> {
+    return api.get<PagedResponse<ComponentDto>>(`/${category}/compatible`, {
+      params: { ...request, ...buildComponentIds },
+      paramsSerializer: (params) =>
+        qs.stringify(params, { arrayFormat: 'repeat' }),
+    });
   }
 }

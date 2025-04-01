@@ -1,7 +1,6 @@
 import { Navigate, useParams } from 'react-router-dom';
 import { useComponent } from '../../hooks/pcComponents/useComponent';
 import { IMAGES_URL } from '../../http';
-import { useBuildStore } from '../../store/buildStore';
 import AddToBuildButton from './AddToBuildButton';
 
 export default function ComponentPage() {
@@ -11,8 +10,6 @@ export default function ComponentPage() {
   if (isNaN(componentId) || !category) {
     return <Navigate to='/404' />;
   }
-
-  const addComponent = useBuildStore((state) => state.addComponent);
 
   const { isPending, isError, data } = useComponent({
     id: parseInt(id || '0'),
@@ -28,13 +25,13 @@ export default function ComponentPage() {
   }
 
   return (
-    <div className='mx-auto w-3/4 flex gap-6 mt-6 justify-center'>
-      <div className='flex items-center justify-center w-40 h-40'>
+    <div className='mx-auto w-1/2 flex gap-6 mt-6 justify-center'>
+      <div className='flex items-center justify-center w-52 h-52 flex-shrink-0'>
         {data.imagePath ? (
           <img
             src={`${IMAGES_URL}${data.imagePath}`}
             alt={data.name}
-            className='w-full h-full rounded-lg'
+            className='rounded-lg'
           />
         ) : (
           <div className='w-full h-full flex items-center justify-center p-1 bg-gray-200 text-gray-500 rounded'>

@@ -4,5 +4,5 @@ interface ErrorMessageProps {
 
 export default function ErrorMessage(props: ErrorMessageProps) {
   if (!props.message) return null;
-  return <div style={{ color: 'red' }}>{props.message}</div>;
+  return <div className='text-red-500 font-semibold'>{props.message}</div>;
 }

@@ -1,4 +1,4 @@
-export interface GetComponentsResponse<T> {
+export interface PagedResponse<T> {
   items: T[];
   page: number;
   pageSize: number;
